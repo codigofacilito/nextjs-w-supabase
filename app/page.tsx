@@ -1,6 +1,9 @@
 'use client';
 
-import { ChangeEvent, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { ChangeEvent, useEffect, useState } from "react";
+import UserItem from "./components/UserItem";
+import { PostgrestError } from "@supabase/supabase-js";
 
 type User = {
   id: number;
@@ -19,6 +22,27 @@ const initialState = {
 
 const Index = () => {
   const [formValues, setFormValues] = useState<User>(initialState);
+  const [users, setUsers] = useState<User[] | null>();
+  const [error, setError] = useState<PostgrestError>(); // TODO
+
+  const loadUsers = async () => {
+    try {
+      const supabase = await createClient();
+      const { data: users, error: usersError } = await supabase.from('users').select();
+
+      if (usersError) {
+        setError(usersError);
+      }
+
+      setUsers(users);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
   const handleFormAction = () => {
 
@@ -86,7 +110,10 @@ const Index = () => {
               onClick={() => setFormValues(initialState)}>
                 Eliminar
             </button>
-        </form>
+      </form>
+      <div>
+        {users?.map(user => <UserItem {...user} key={`users-list-item-${user.id}`} />)}
+      </div>
     </main>
   );
 }
