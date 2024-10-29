@@ -128,3 +128,30 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
+export const createUser = async (formData: FormData) => {
+  try {
+    const supabase = await createClient();
+    const firstName = formData.get('first_name');
+    const lastName = formData.get('last_name');
+    const age = formData.get('age');
+
+    const { error } = await supabase.from('users').insert({
+      first_name: firstName,
+      last_name: lastName,
+      age,
+    });
+
+    if (error) {
+      console.error(error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const updateUser = async (formData: FormData) => {};

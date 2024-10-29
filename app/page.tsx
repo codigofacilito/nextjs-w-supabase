@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 import { ChangeEvent, useEffect, useState } from "react";
 import UserItem from "./components/UserItem";
 import { PostgrestError } from "@supabase/supabase-js";
+import { createUser, updateUser } from "./actions";
 
 type User = {
   id: number;
@@ -20,14 +21,15 @@ const initialState = {
   age: 0,
 };
 
+const supabase = createClient();
+
 const Index = () => {
   const [formValues, setFormValues] = useState<User>(initialState);
   const [users, setUsers] = useState<User[] | null>();
-  const [error, setError] = useState<PostgrestError>(); // TODO
+  const [error, setError] = useState<PostgrestError>(); // TODO Mostrar el error si es que existe
 
   const loadUsers = async () => {
     try {
-      const supabase = await createClient();
       const { data: users, error: usersError } = await supabase.from('users').select();
 
       if (usersError) {
@@ -44,8 +46,18 @@ const Index = () => {
     loadUsers();
   }, []);
 
-  const handleFormAction = () => {
+  const handleFormAction = async (formData: FormData) => {
+    // 
+    if (formValues.id === -1) {
+      // Es un nuevo usuario
+      await createUser(formData); // TODO, si es true, actualizar, o de lo contrario mandar un error
+    } else {
+      // Es un usuario existente
+      await updateUser(formData); // TODO, si es true, actualizar, o de lo contrario mandar un error
+    }
 
+    setFormValues(initialState);
+    loadUsers();
   };
 
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -108,11 +120,17 @@ const Index = () => {
               type="reset"
               className="w-24 bg-white border-none text-black text-sm h-8 rounded-sm ml-2 hover:bg-slate-200"
               onClick={() => setFormValues(initialState)}>
-                Eliminar
+                Limpiar
             </button>
       </form>
       <div>
-        {users?.map(user => <UserItem {...user} key={`users-list-item-${user.id}`} />)}
+        {users?.map(user => (
+            <UserItem
+              {...user}
+              key={`users-list-item-${user.id}`}
+              onRefresh={loadUsers}
+            />
+        ))}
       </div>
     </main>
   );

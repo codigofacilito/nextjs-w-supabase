@@ -1,5 +1,6 @@
 'use client';
 
+import { createClient } from "@/utils/supabase/client";
 import { FC, useState } from "react";
 
 type User = {
@@ -11,20 +12,41 @@ type User = {
 };
 
 type UserItemProps = User & {
-
+    onRefresh: () => void;
 };
+
+const supabase = createClient();
 
 const UserItem: FC<UserItemProps> = ({
     first_name: firstName,
     last_name: lastName,
     age,
     id,
+    onRefresh,
 }) => {
     const [error, setError] = useState<string | null>(null);
     const [deleteLabel, setDeleteLabel] = useState('Eliminar');
     const [confirmDelete, setConfirmDelete] = useState(false);
 
-    const handleDeleteUser = () => {};
+    const handleDeleteUser = async () => {
+        setDeleteLabel('Eliminando...');
+        setError(null);
+
+        try {
+            const { error } = await supabase.from('users').delete().eq('id', id);
+
+            if (error) {
+                setError(error);
+                console.error(error);
+                return;
+            }
+
+            onRefresh();
+        } catch (error) {
+            console.error(error);
+            setError('Ha ocurrido un error'); // TODO Mostrar el error en pantalla
+        }
+    };
 
     const handleConfirmDelete = () => {
         setDeleteLabel('Confirmar');
