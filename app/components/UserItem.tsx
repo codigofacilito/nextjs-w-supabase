@@ -13,6 +13,7 @@ type User = {
 
 type UserItemProps = User & {
     onRefresh: () => void;
+    onEdit: (user: User) => void;
 };
 
 const supabase = createClient();
@@ -23,6 +24,7 @@ const UserItem: FC<UserItemProps> = ({
     age,
     id,
     onRefresh,
+    onEdit,
 }) => {
     const [error, setError] = useState<string | null>(null);
     const [deleteLabel, setDeleteLabel] = useState('Eliminar');
@@ -65,12 +67,12 @@ const UserItem: FC<UserItemProps> = ({
                 onClick={confirmDelete ? handleDeleteUser : handleConfirmDelete}>
                 {deleteLabel}
             </button>
-            <button className="ml-2 bg-white text-sm text-black px-4 rounded-sm hover:bg-slate-200" /*onClick={() => onEdit({
+            <button className="ml-2 bg-white text-sm text-black px-4 rounded-sm hover:bg-slate-200" onClick={() => onEdit({
                 id,
                 first_name: firstName,
                 last_name: lastName,
                 age,
-            })}*/>
+            })}>
                 Editar
             </button>
         </div>

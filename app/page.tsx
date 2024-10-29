@@ -30,7 +30,7 @@ const Index = () => {
 
   const loadUsers = async () => {
     try {
-      const { data: users, error: usersError } = await supabase.from('users').select();
+      const { data: users, error: usersError } = await supabase.from('users').select().order('id');
 
       if (usersError) {
         setError(usersError);
@@ -64,6 +64,10 @@ const Index = () => {
     const { name, value } = e.target;
 
     setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: value }));
+  };
+
+  const handleEditUser = (user: User) => {
+    setFormValues(user);
   };
 
   return (
@@ -129,6 +133,7 @@ const Index = () => {
               {...user}
               key={`users-list-item-${user.id}`}
               onRefresh={loadUsers}
+              onEdit={handleEditUser}
             />
         ))}
       </div>

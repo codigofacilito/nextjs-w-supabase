@@ -154,4 +154,28 @@ export const createUser = async (formData: FormData) => {
   }
 };
 
-export const updateUser = async (formData: FormData) => {};
+export const updateUser = async (formData: FormData) => {
+  try {
+    const supabase = await createClient();
+    const firstName = formData.get('first_name');
+    const lastName = formData.get('last_name');
+    const age = Number(formData.get('age'));
+    const id = formData.get('id');
+
+    const { error } = await supabase.from('users').update({
+      first_name: firstName,
+      last_name: lastName,
+      age,
+    }).eq('id', id);
+    
+    if (error) {
+      console.error(error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
