@@ -1,5 +1,6 @@
 import { FC } from "react";
 import dayjs from "dayjs";
+import Link from 'next/link';
 
 import styles from "./Post.module.css";
 
@@ -33,20 +34,20 @@ const Post: FC<PostProps> = ({
                 <img src={image} alt={title} className={styles.image} />
             </div>
             <div className={styles.rightContainer}>
-                {/*<Link href={`/blog/${id}`}>*/}
+                <Link href={`/blog/${id}`}>
                     <h4 className={styles.title}>{title}</h4>
-                {/*</Link>*/}
+                </Link>
                 <div className={styles.tagsContainer}>
                     <span className={styles.tagLabel}>
                         Fecha: 
                         <span className={styles.tagValue}>{dayjs(publishedDate).format("DD/M/YYYY")},</span>
                     </span>
                     <span className={styles.tagLabel}>
-                        Author:
+                        Autor:
                         <span className={styles.tagValue}>{`${author.first_name} ${author.last_name}`},</span>
                     </span>
                     <span className={styles.tagLabel}>
-                        Category:
+                        Categoria:
                         <span className={styles.tagValue}>{category.name}</span>
                     </span>
                 </div>
