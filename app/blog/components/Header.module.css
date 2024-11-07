@@ -1,0 +1,19 @@
+/* styles/Header.module.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #333;
+    color: #fff;
+  }
+  
+.header nav a {
+    margin-left: 1rem;
+    color: #fff;
+    text-decoration: none;
+}
+  
+.header nav a:hover {
+    text-decoration: underline;
+}
