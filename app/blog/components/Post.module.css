@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    margin: 0px 0px 34px 0px;
+}
+
+.leftContainer {
+    width: 30%;
+}
+
+.image {
+    max-width: 380px;
+    width: 100%;
+    height: 250px;
+    margin: 0 auto;
+    object-fit: cover;
+}
+
+.title {
+    font-size: 34px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.rightContainer {
+    width: 70%;
+}
+
+.tagsContainer {
+    display: flex;
+    margin-bottom: 4px;
+}
+
+.tagLabel {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tagValue {
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 4px;
+    cursor: pointer;
+    margin-right: 4px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        color: #bababa;
+    }
+}
