@@ -8,14 +8,19 @@ import { redirect } from "next/navigation";
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const firstName = formData.get("first_name")?.toString();
+  const lastName = formData.get("last_name")?.toString();
+  const age = Number(formData.get("age"));
+
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
   if (!email || !password) {
-    return { error: "Email and password are required" };
+    return { error: "Email y contrasena son requeridos" };
   }
 
-  const { error } = await supabase.auth.signUp({
+  // Guarda el usuario en auth.users
+  const { error, data: user } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -23,8 +28,23 @@ export const signUpAction = async (formData: FormData) => {
     },
   });
 
+  // Guarda el usuario tambien, pero en la tabla de public.users
+  const { error: errorSavingUser } = await supabase.from("users").insert({
+    id: user.user?.id,
+    first_name: firstName,
+    last_name: lastName,
+    age,
+  });
+
+  if (errorSavingUser) {
+    console.error(errorSavingUser)
+    // localhost:3000/sign-up?error=errorSavingUser.message
+    return encodedRedirect("error", "/sign-up", errorSavingUser.message);
+  }
+
   if (error) {
     console.error(error.code + " " + error.message);
+    // localhost:3000/sign-up?error=error.message
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
     return encodedRedirect(
